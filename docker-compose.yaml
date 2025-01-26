@@ -1,18 +1,4 @@
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: src/main/docker/Dockerfile.jvm
-    container_name: backend-service
-    ports:
-      - "8080:8080"
-    environment:
-      - QUARKUS_DATASOURCE_USERNAME=bankuser
-      - QUARKUS_DATASOURCE_PASSWORD=bankpass
-      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://database:5432/bankdata
-    depends_on:
-      - database
-
   database:
     image: postgres:15
     container_name: postgres-database
@@ -22,6 +8,21 @@ services:
       POSTGRES_DB: bankdata
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend-service
+    ports:
+      - "8080:8080"
+    environment:
+      - QUARKUS_DATASOURCE_USERNAME=bankuser
+      - QUARKUS_DATASOURCE_PASSWORD=bankpass
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://database:5432/bankdata
+    depends_on:
+      - database
     networks:
       - backend-network
 
