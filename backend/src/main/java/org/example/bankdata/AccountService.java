@@ -28,6 +28,9 @@ public class AccountService {
 
     @Transactional
     public Account depositMoney(String accountNumber, double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than 0");
+        }
 
         Account account = accountRepository.find("accountNumber", accountNumber).firstResult();
         if (account == null) {
@@ -36,6 +39,38 @@ public class AccountService {
         account.setBalance(account.getBalance() + amount);
         accountRepository.persist(account);
         return account;
+    }
+
+    @Transactional
+    public void transferMoney(String fromAccount, String toAccount, double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than 0");
+        }
+
+        if (fromAccount.equals(toAccount)) {
+            throw new IllegalArgumentException("Source and destination accounts must be different");
+        }
+
+        Account source = accountRepository.find("accountNumber", fromAccount).firstResult();
+        Account destination = accountRepository.find("accountNumber", toAccount).firstResult();
+
+        if (source == null) {
+            throw new NotFoundException("Source account not found");
+        }
+
+        if (destination == null) {
+            throw new NotFoundException("Destination account not found");
+        }
+
+        if (source.getBalance() < amount) {
+            throw new IllegalArgumentException("Insufficient balance in source account");
+        }
+
+        source.setBalance(source.getBalance() - amount);
+        destination.setBalance(destination.getBalance() + amount);
+
+        accountRepository.persist(source);
+        accountRepository.persist(destination);
     }
 
 }
