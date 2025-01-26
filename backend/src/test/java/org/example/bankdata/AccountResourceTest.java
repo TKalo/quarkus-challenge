@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -17,104 +18,355 @@ import jakarta.inject.Inject;
 @QuarkusTestResource(PostgreSQLTestResource.class)
 class AccountResourceTest {
 
-    @Inject
-    AccountRepository accountRepository;
+        @Inject
+        AccountRepository accountRepository;
 
-    @Test
-    void testCreateAccountEndpointAndValidateDatabase() {
-        String requestBody = """
-                {
-                    "firstName": "John",
-                    "lastName": "Doe"
-                }
-                """;
+        @Test
+        @Tag("create")
+        void testCreateAccountEndpointAndValidateDatabase() {
+                String requestBody = """
+                                {
+                                    "firstName": "John",
+                                    "lastName": "Doe"
+                                }
+                                """;
 
-        Account responseAccount = given()
-                .header("Content-Type", "application/json")
-                .body(requestBody)
-                .when()
-                .post("/account")
-                .then()
-                .statusCode(200)
-                .body("id", notNullValue())
-                .body("accountNumber", notNullValue())
-                .extract()
-                .as(Account.class);
+                Account responseAccount = given()
+                                .header("Content-Type", "application/json")
+                                .body(requestBody)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .body("id", notNullValue())
+                                .body("accountNumber", notNullValue())
+                                .extract()
+                                .as(Account.class);
 
-        Account databaseAccount = accountRepository.findById(responseAccount.getId());
+                Account databaseAccount = accountRepository.findById(responseAccount.getId());
 
-        assertEquals(responseAccount.getId(), databaseAccount.getId());
-        assertEquals(responseAccount.getFirstName(), databaseAccount.getFirstName());
-        assertEquals(responseAccount.getLastName(), databaseAccount.getLastName());
-        assertEquals(responseAccount.getAccountNumber(), databaseAccount.getAccountNumber());
-        assertEquals(responseAccount.getBalance(), databaseAccount.getBalance());
-    }
+                assertEquals(responseAccount.getId(), databaseAccount.getId());
+                assertEquals(responseAccount.getFirstName(), databaseAccount.getFirstName());
+                assertEquals(responseAccount.getLastName(), databaseAccount.getLastName());
+                assertEquals(responseAccount.getAccountNumber(), databaseAccount.getAccountNumber());
+                assertEquals(responseAccount.getBalance(), databaseAccount.getBalance());
+        }
 
-    @Test
-    public void testDepositMoneySuccess() {
-        AccountInput input = new AccountInput();
-        input.setFirstName("John");
-        input.setLastName("Doe");
+        @Test
+        @Tag("deposit")
+        public void testDepositMoneySuccess() {
+                AccountInput input = new AccountInput();
+                input.setFirstName("John");
+                input.setLastName("Doe");
 
-        Account account = RestAssured.given()
-                .contentType("application/json")
-                .body(input)
-                .when()
-                .post("/account")
-                .then()
-                .statusCode(200)
-                .extract()
-                .as(Account.class);
+                Account account = RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
 
-        double depositAmount = 100.0;
-        RestAssured.given()
-                .contentType("application/json")
-                .body(depositAmount)
-                .when()
-                .post("/account/" + account.getAccountNumber() + "/deposit")
-                .then()
-                .statusCode(200)
-                .body("balance", equalTo((float) depositAmount));
-    }
+                double depositAmount = 100.0;
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(depositAmount)
+                                .when()
+                                .post("/account/" + account.getAccountNumber() + "/deposit")
+                                .then()
+                                .statusCode(200)
+                                .body("balance", equalTo((float) depositAmount));
+        }
 
-    @Test
-    public void testDepositNegativeAmount() {
-        AccountInput input = new AccountInput();
-        input.setFirstName("Jane");
-        input.setLastName("Smith");
+        @Test
+        @Tag("deposit")
+        public void testDepositNegativeAmount() {
+                AccountInput input = new AccountInput();
+                input.setFirstName("Jane");
+                input.setLastName("Smith");
 
-        Account account = RestAssured.given()
-                .contentType("application/json")
-                .body(input)
-                .when()
-                .post("/account")
-                .then()
-                .statusCode(200)
-                .extract()
-                .as(Account.class);
+                Account account = RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
 
-        double negativeAmount = 0;
-        RestAssured.given()
-                .contentType("application/json")
-                .body(negativeAmount)
-                .when()
-                .post("/account/" + account.getAccountNumber() + "/deposit")
-                .then()
-                .statusCode(400)
-                .body("error", containsString(("Amount must be greater than 0")));
-    }
+                double negativeAmount = 0;
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(negativeAmount)
+                                .when()
+                                .post("/account/" + account.getAccountNumber() + "/deposit")
+                                .then()
+                                .statusCode(400)
+                                .body("error", containsString(("Amount must be greater than 0")));
+        }
 
-    @Test
-    public void testDepositToNonExistingAccount() {
-        String invalidAccountNumber = "non-existing-account";
-        double depositAmount = 100.0;
+        @Test
+        @Tag("deposit")
+        public void testDepositToNonExistingAccount() {
+                String invalidAccountNumber = "non-existing-account";
+                double depositAmount = 100.0;
 
-        RestAssured.given()
-                .contentType("application/json")
-                .body(depositAmount)
-                .when()
-                .post("/account/" + invalidAccountNumber + "/deposit")
-                .then()
-                .statusCode(404);
-    }
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(depositAmount)
+                                .when()
+                                .post("/account/" + invalidAccountNumber + "/deposit")
+                                .then()
+                                .statusCode(404);
+        }
+
+        @Test
+        @Tag("transfer")
+        public void testSuccessfulTransfer() {
+                // Create source account
+                AccountInput sourceInput = new AccountInput();
+                sourceInput.setFirstName("John");
+                sourceInput.setLastName("Doe");
+
+                Account sourceAccount = RestAssured.given()
+                                .contentType("application/json")
+                                .body(sourceInput)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                // Deposit money into source account
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(100.0)
+                                .when()
+                                .post("/account/" + sourceAccount.getAccountNumber() + "/deposit")
+                                .then()
+                                .statusCode(200);
+
+                // Create destination account
+                AccountInput destinationInput = new AccountInput();
+                destinationInput.setFirstName("Jane");
+                destinationInput.setLastName("Smith");
+
+                Account destinationAccount = RestAssured.given()
+                                .contentType("application/json")
+                                .body(destinationInput)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                // Transfer money
+                TransferInput input = new TransferInput();
+                input.setFromAccount(sourceAccount.getAccountNumber());
+                input.setToAccount(destinationAccount.getAccountNumber());
+                input.setAmount(50.0);
+
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account/transfer")
+                                .then()
+                                .statusCode(200)
+                                .body("message", equalTo("Transfer successful"));
+        }
+
+        @Test
+        @Tag("transfer")
+        public void testSourceAccountNotFound() {
+                AccountInput sourceInput = new AccountInput();
+                sourceInput.setFirstName("John");
+                sourceInput.setLastName("Doe");
+
+                Account validAccount = RestAssured.given()
+                                .contentType("application/json")
+                                .body(sourceInput)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                TransferInput input = new TransferInput();
+                input.setFromAccount("non-existing-account");
+                input.setToAccount(validAccount.getAccountNumber());
+                input.setAmount(50.0);
+
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account/transfer")
+                                .then()
+                                .statusCode(404)
+                                .body("error", equalTo("Source account not found"));
+        }
+
+        @Test
+        @Tag("transfer")
+        public void testDestinationAccountNotFound() {
+                AccountInput sourceInput = new AccountInput();
+                sourceInput.setFirstName("John");
+                sourceInput.setLastName("Doe");
+
+                Account validAccount = RestAssured.given()
+                                .contentType("application/json")
+                                .body(sourceInput)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                TransferInput input = new TransferInput();
+                input.setFromAccount(validAccount.getAccountNumber());
+                input.setToAccount("non-existing-account");
+                input.setAmount(50.0);
+
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account/transfer")
+                                .then()
+                                .statusCode(404)
+                                .body("error", equalTo("Destination account not found"));
+        }
+
+        @Test
+        @Tag("transfer")
+        public void testInsufficientFunds() {
+                AccountInput sourceInput = new AccountInput();
+                sourceInput.setFirstName("John");
+                sourceInput.setLastName("Doe");
+
+                Account sourceAccount = RestAssured.given()
+                                .contentType("application/json")
+                                .body(sourceInput)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                AccountInput destinationInput = new AccountInput();
+                destinationInput.setFirstName("John");
+                destinationInput.setLastName("Doe");
+
+                Account destinationAccount = RestAssured.given()
+                                .contentType("application/json")
+                                .body(sourceInput)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                TransferInput input = new TransferInput();
+                input.setFromAccount(sourceAccount.getAccountNumber());
+                input.setToAccount(destinationAccount.getAccountNumber());
+                input.setAmount(100.0);
+
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account/transfer")
+                                .then()
+                                .statusCode(400)
+                                .body("error", equalTo("Insufficient balance in source account"));
+        }
+
+        @Test
+        @Tag("transfer")
+        public void testZeroTransferAmount() {
+                AccountInput sourceInput = new AccountInput();
+                sourceInput.setFirstName("John");
+                sourceInput.setLastName("Doe");
+
+                Account sourceAccount = RestAssured.given()
+                                .contentType("application/json")
+                                .body(sourceInput)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                AccountInput destinationInput = new AccountInput();
+                destinationInput.setFirstName("John");
+                destinationInput.setLastName("Doe");
+
+                Account destinationAccount = RestAssured.given()
+                                .contentType("application/json")
+                                .body(sourceInput)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                TransferInput input = new TransferInput();
+                input.setFromAccount(sourceAccount.getAccountNumber());
+                input.setToAccount(destinationAccount.getAccountNumber());
+                input.setAmount(0);
+
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account/transfer")
+                                .then()
+                                .statusCode(400)
+                                .body("error", equalTo("Amount must be greater than 0"));
+        }
+
+        @Test
+        @Tag("transfer")
+        public void testSameSourceAndDestinationAccount() {
+                AccountInput validInput = new AccountInput();
+                validInput.setFirstName("John");
+                validInput.setLastName("Doe");
+
+                Account validAccount = RestAssured.given()
+                                .contentType("application/json")
+                                .body(validInput)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                TransferInput input = new TransferInput();
+                input.setFromAccount(validAccount.getAccountNumber());
+                input.setToAccount(validAccount.getAccountNumber());
+                input.setAmount(50.0);
+
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account/transfer")
+                                .then()
+                                .statusCode(400)
+                                .body("error", equalTo("Source and destination accounts must be different"));
+        }
+
 }
