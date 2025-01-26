@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class AccountService {
@@ -24,4 +25,17 @@ public class AccountService {
         accountRepository.persist(account);
         return account;
     }
+
+    @Transactional
+    public Account depositMoney(String accountNumber, double amount) {
+
+        Account account = accountRepository.find("accountNumber", accountNumber).firstResult();
+        if (account == null) {
+            throw new NotFoundException("Account not found");
+        }
+        account.setBalance(account.getBalance() + amount);
+        accountRepository.persist(account);
+        return account;
+    }
+
 }
