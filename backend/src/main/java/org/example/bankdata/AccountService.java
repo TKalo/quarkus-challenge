@@ -83,4 +83,8 @@ public class AccountService {
         return account;
     }
 
+    @Transactional
+    public List<Account> getAllAccounts() {
+        return accountRepository.listAll();
+    }
 }

@@ -103,4 +103,15 @@ public class AccountResource {
                     Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
         }
     }
+
+    @GET
+    public Response getAllAccounts() {
+        try {
+            return Response.ok(accountService.getAllAccounts()).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new jakarta.ws.rs.WebApplicationException(
+                    Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+        }
+    }
 }
