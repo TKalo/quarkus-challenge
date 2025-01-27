@@ -2,6 +2,10 @@ package org.example.bankdata.account;
 
 import java.util.Map;
 
+import org.example.bankdata.account.input.AccountInput;
+import org.example.bankdata.account.input.DepositeInput;
+import org.example.bankdata.account.input.TransferInput;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -34,9 +38,9 @@ public class AccountResource {
 
     @POST
     @Path("/{accountNumber}/deposit")
-    public Account depositMoney(@PathParam("accountNumber") String accountNumber, double amount) {
+    public Account depositMoney(@PathParam("accountNumber") String accountNumber, DepositeInput input) {
         try {
-            return accountService.depositMoney(accountNumber, amount);
+            return accountService.depositMoney(accountNumber, input.getAmount());
         } catch (NotFoundException e) {
             throw new jakarta.ws.rs.WebApplicationException(
                     Response.status(Response.Status.NOT_FOUND).build());

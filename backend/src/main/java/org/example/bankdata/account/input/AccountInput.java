@@ -1,4 +1,4 @@
-package org.example.bankdata.account;
+package org.example.bankdata.account.input;
 
 public class AccountInput {
     private String firstName;

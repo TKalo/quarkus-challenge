@@ -3,6 +3,7 @@ package org.example.bankdata.account;
 import java.util.List;
 import java.util.UUID;
 
+import org.example.bankdata.account.input.AccountInput;
 import org.example.bankdata.currency.CurrencyService;
 
 import jakarta.enterprise.context.ApplicationScoped;

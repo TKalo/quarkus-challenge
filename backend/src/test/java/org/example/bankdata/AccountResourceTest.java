@@ -7,9 +7,10 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.example.bankdata.account.Account;
-import org.example.bankdata.account.AccountInput;
 import org.example.bankdata.account.AccountRepository;
-import org.example.bankdata.account.TransferInput;
+import org.example.bankdata.account.input.AccountInput;
+import org.example.bankdata.account.input.DepositeInput;
+import org.example.bankdata.account.input.TransferInput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -81,15 +82,16 @@ class AccountResourceTest {
                                 .extract()
                                 .as(Account.class);
 
-                double depositAmount = 100.0;
+                DepositeInput depositeInput = new DepositeInput();
+                depositeInput.setAmount(100);
                 RestAssured.given()
                                 .contentType("application/json")
-                                .body(depositAmount)
+                                .body(depositeInput)
                                 .when()
                                 .post("/account/" + account.getAccountNumber() + "/deposit")
                                 .then()
                                 .statusCode(200)
-                                .body("balance", equalTo((float) depositAmount));
+                                .body("balance", equalTo((float) depositeInput.getAmount()));
         }
 
         @Test
@@ -109,10 +111,11 @@ class AccountResourceTest {
                                 .extract()
                                 .as(Account.class);
 
-                double negativeAmount = 0;
+                DepositeInput depositeInput = new DepositeInput();
+                depositeInput.setAmount(0);
                 RestAssured.given()
                                 .contentType("application/json")
-                                .body(negativeAmount)
+                                .body(depositeInput)
                                 .when()
                                 .post("/account/" + account.getAccountNumber() + "/deposit")
                                 .then()
@@ -124,11 +127,12 @@ class AccountResourceTest {
         @Tag("deposit")
         public void testDepositToNonExistingAccount() {
                 String invalidAccountNumber = "non-existing-account";
-                double depositAmount = 100.0;
+                DepositeInput depositeInput = new DepositeInput();
+                depositeInput.setAmount(100);
 
                 RestAssured.given()
                                 .contentType("application/json")
-                                .body(depositAmount)
+                                .body(depositeInput)
                                 .when()
                                 .post("/account/" + invalidAccountNumber + "/deposit")
                                 .then()
@@ -154,9 +158,11 @@ class AccountResourceTest {
                                 .as(Account.class);
 
                 // Deposit money into source account
+                DepositeInput depositeInput = new DepositeInput();
+                depositeInput.setAmount(100);
                 RestAssured.given()
                                 .contentType("application/json")
-                                .body(100.0)
+                                .body(depositeInput)
                                 .when()
                                 .post("/account/" + sourceAccount.getAccountNumber() + "/deposit")
                                 .then()
@@ -423,10 +429,11 @@ class AccountResourceTest {
                                 .extract()
                                 .as(Account.class);
 
-                double depositAmount = 100.0;
+                DepositeInput depositeInput = new DepositeInput();
+                depositeInput.setAmount(100);
                 RestAssured.given()
                                 .contentType("application/json")
-                                .body(depositAmount)
+                                .body(depositeInput)
                                 .when()
                                 .post("/account/" + account.getAccountNumber() + "/deposit")
                                 .then()
@@ -437,7 +444,7 @@ class AccountResourceTest {
                                 .get("/account/" + account.getAccountNumber() + "/balance")
                                 .then()
                                 .statusCode(200)
-                                .body("balance", equalTo((float) depositAmount));
+                                .body("balance", equalTo((float) depositeInput.getAmount()));
         }
 
         @Test
