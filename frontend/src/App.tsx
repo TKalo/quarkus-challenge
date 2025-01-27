@@ -1,3 +1,4 @@
+import AccountCreationForm from "./components/AccountCreationForm";
 import AccountList from "./components/AccountList";
 import CurrencyExchangeForm from "./components/CurrencyExcangeForm";
 
@@ -9,6 +10,7 @@ const App = () => {
           Bank Account Manager
         </div>
         <CurrencyExchangeForm />
+        <AccountCreationForm />
         <AccountList />
       </div>
     </div>
