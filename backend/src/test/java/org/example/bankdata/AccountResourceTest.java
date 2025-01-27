@@ -369,4 +369,75 @@ class AccountResourceTest {
                                 .body("error", equalTo("Source and destination accounts must be different"));
         }
 
+        @Test
+        @Tag("balance")
+        public void testGetBalance() {
+                AccountInput input = new AccountInput();
+                input.setFirstName("John");
+                input.setLastName("Doe");
+
+                Account account = RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                RestAssured.given()
+                                .when()
+                                .get("/account/" + account.getAccountNumber() + "/balance")
+                                .then()
+                                .statusCode(200)
+                                .body("balance", equalTo((float) 0.0));
+        }
+
+        @Test
+        @Tag("balance")
+        public void testGetUpdatedBalance() {
+                AccountInput input = new AccountInput();
+                input.setFirstName("John");
+                input.setLastName("Doe");
+
+                Account account = RestAssured.given()
+                                .contentType("application/json")
+                                .body(input)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200)
+                                .extract()
+                                .as(Account.class);
+
+                double depositAmount = 100.0;
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(depositAmount)
+                                .when()
+                                .post("/account/" + account.getAccountNumber() + "/deposit")
+                                .then()
+                                .statusCode(200);
+
+                RestAssured.given()
+                                .when()
+                                .get("/account/" + account.getAccountNumber() + "/balance")
+                                .then()
+                                .statusCode(200)
+                                .body("balance", equalTo((float) depositAmount));
+        }
+
+        @Test
+        @Tag("balance")
+        public void testGetBalanceForNonExistingAccount() {
+                String invalidAccountNumber = "non-existing-account";
+
+                RestAssured.given()
+                                .when()
+                                .get("/account/" + invalidAccountNumber + "/balance")
+                                .then()
+                                .statusCode(404);
+        }
+
 }
