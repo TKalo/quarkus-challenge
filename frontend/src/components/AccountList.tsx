@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AccountDepositeDialog from "./AccountDepositeDialog";
+import AccountTransferDialog from "./AccountTransferDialog";
 
 interface Account {
   accountNumber: string;
@@ -12,6 +13,7 @@ interface Account {
 const AccountList = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+  const [showTransferDialog, setShowTransferDialog] = useState<boolean>(false);
 
   useEffect(() => {
     fetchAccounts();
@@ -29,7 +31,7 @@ const AccountList = () => {
       <ul className="space-y-2">
         {accounts.map((account) => (
           <div
-            className="p-4 border rounded-lg shadow-md flex md:flex-row flex-col justify-between items-center"
+            className="p-4 border rounded-lg shadow-md flex md:flex-row flex-col justify-between items-center space-y-4"
             key={account.accountNumber}
           >
             <li key={account.accountNumber}>
@@ -43,21 +45,43 @@ const AccountList = () => {
                 <strong>Balance:</strong> {account.balance} DKK
               </p>
             </li>
-            <button
-              className="bg-blue-500 text-white py-2 px-4 mt-2 rounded-lg hover:bg-blue-600"
-              onClick={() => setSelectedAccount(account)}
-            >
-              Add Money
-            </button>
+            <div className="flex md:flex-col flex-row md:space-x-0 space-x-2">
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mt-2 rounded-lg hover:bg-blue-600"
+                onClick={() => setSelectedAccount(account)}
+              >
+                Add Money
+              </button>
+              <button
+                className="bg-blue-500 text-white py-2 px-4 mt-2 rounded-lg hover:bg-blue-600"
+                onClick={() => {
+                  setSelectedAccount(account);
+                  setShowTransferDialog(true);
+                }}
+              >
+                Transfer money
+              </button>
+            </div>
           </div>
         ))}
       </ul>
 
-      {/* Deposit Dialog */}
       {selectedAccount && (
         <AccountDepositeDialog
           account={selectedAccount}
           onClose={() => setSelectedAccount(null)}
+          onSuccess={fetchAccounts}
+        />
+      )}
+
+      {selectedAccount && showTransferDialog && (
+        <AccountTransferDialog
+          baseAccount={selectedAccount}
+          accounts={accounts}
+          onClose={() => {
+            setSelectedAccount(null);
+            setShowTransferDialog(false);
+          }}
           onSuccess={fetchAccounts}
         />
       )}
