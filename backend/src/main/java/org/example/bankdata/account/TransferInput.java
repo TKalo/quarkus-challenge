@@ -1,4 +1,4 @@
-package org.example.bankdata;
+package org.example.bankdata.account;
 
 public class TransferInput {
     private String fromAccount;

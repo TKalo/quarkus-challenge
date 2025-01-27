@@ -1,7 +1,9 @@
-package org.example.bankdata;
+package org.example.bankdata.account;
 
 import java.util.List;
 import java.util.UUID;
+
+import org.example.bankdata.currency.CurrencyService;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -9,10 +11,9 @@ import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class AccountService {
-
     private final AccountRepository accountRepository;
 
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository, CurrencyService exchangeRateService) {
         this.accountRepository = accountRepository;
     }
 

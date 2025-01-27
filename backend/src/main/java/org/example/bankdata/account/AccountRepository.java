@@ -1,4 +1,4 @@
-package org.example.bankdata;
+package org.example.bankdata.account;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
