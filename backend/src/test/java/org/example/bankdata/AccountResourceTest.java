@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,7 @@ import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @QuarkusTest
 @QuarkusTestResource(PostgreSQLTestResource.class)
@@ -20,6 +22,12 @@ class AccountResourceTest {
 
         @Inject
         AccountRepository accountRepository;
+
+        @BeforeEach
+        @Transactional
+        void purgeDatabase() {
+                accountRepository.deleteAll();
+        }
 
         @Test
         @Tag("create")
@@ -440,4 +448,38 @@ class AccountResourceTest {
                                 .statusCode(404);
         }
 
+        @Test
+        @Tag("getAll")
+        public void testGetAllAccounts() {
+                AccountInput input1 = new AccountInput();
+                input1.setFirstName("John");
+                input1.setLastName("Doe");
+
+                AccountInput input2 = new AccountInput();
+                input2.setFirstName("Jane");
+                input2.setLastName("Smith");
+
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(input1)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200);
+
+                RestAssured.given()
+                                .contentType("application/json")
+                                .body(input2)
+                                .when()
+                                .post("/account")
+                                .then()
+                                .statusCode(200);
+
+                RestAssured.given()
+                                .when()
+                                .get("/account")
+                                .then()
+                                .statusCode(200)
+                                .body("size()", equalTo(2));
+        }
 }
