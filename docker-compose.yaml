@@ -22,12 +22,24 @@ services:
       - QUARKUS_DATASOURCE_USERNAME=bankuser
       - QUARKUS_DATASOURCE_PASSWORD=bankpass
       - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://database:5432/bankdata
-      - EXCHANGE_API_KEY=
+      - EXCHANGE_API_KEY=a5685c974194564c44c50ee1
       - EXCHANGE_API_URL=https://v6.exchangerate-api.com/v6/
     depends_on:
       - database
     networks:
       - backend-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+    depends_on:
+      - backend
 
 networks:
   backend-network:
