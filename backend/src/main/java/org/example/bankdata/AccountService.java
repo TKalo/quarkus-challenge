@@ -1,5 +1,6 @@
 package org.example.bankdata;
 
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -71,6 +72,15 @@ public class AccountService {
 
         accountRepository.persist(source);
         accountRepository.persist(destination);
+    }
+
+    @Transactional
+    public Account getAccount(String accountNumber) {
+        Account account = accountRepository.find("accountNumber", accountNumber).firstResult();
+        if (account == null) {
+            throw new NotFoundException("Account not found");
+        }
+        return account;
     }
 
 }

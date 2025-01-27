@@ -4,6 +4,7 @@ import java.util.Map;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -84,6 +85,22 @@ public class AccountResource {
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GET
+    @Path("/{accountNumber}/balance")
+    public Response getAccountBalance(@PathParam("accountNumber") String accountNumber) {
+        try {
+            Account account = accountService.getAccount(accountNumber);
+            return Response.ok(Map.of("balance", account.getBalance())).build();
+        } catch (NotFoundException e) {
+            throw new jakarta.ws.rs.WebApplicationException(
+                    Response.status(Response.Status.NOT_FOUND).build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new jakarta.ws.rs.WebApplicationException(
+                    Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
         }
     }
 }
