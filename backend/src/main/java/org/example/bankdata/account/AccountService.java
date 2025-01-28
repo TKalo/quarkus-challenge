@@ -19,8 +19,8 @@ public class AccountService {
     }
 
     @Transactional
-    public Account createAccount(AccountInput input) {
-        Account account = new Account();
+    public AccountModel createAccount(AccountInput input) {
+        AccountModel account = new AccountModel();
         account.setFirstName(input.getFirstName());
         account.setLastName(input.getLastName());
         account.setAccountNumber(UUID.randomUUID().toString());
@@ -30,12 +30,12 @@ public class AccountService {
     }
 
     @Transactional
-    public Account depositMoney(String accountNumber, double amount) {
+    public AccountModel depositMoney(String accountNumber, double amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
 
-        Account account = accountRepository.find("accountNumber", accountNumber).firstResult();
+        AccountModel account = accountRepository.find("accountNumber", accountNumber).firstResult();
         if (account == null) {
             throw new NotFoundException("Account not found");
         }
@@ -54,8 +54,8 @@ public class AccountService {
             throw new IllegalArgumentException("Source and destination accounts must be different");
         }
 
-        Account source = accountRepository.find("accountNumber", fromAccount).firstResult();
-        Account destination = accountRepository.find("accountNumber", toAccount).firstResult();
+        AccountModel source = accountRepository.find("accountNumber", fromAccount).firstResult();
+        AccountModel destination = accountRepository.find("accountNumber", toAccount).firstResult();
 
         if (source == null) {
             throw new NotFoundException("Source account not found");
@@ -77,8 +77,8 @@ public class AccountService {
     }
 
     @Transactional
-    public Account getAccount(String accountNumber) {
-        Account account = accountRepository.find("accountNumber", accountNumber).firstResult();
+    public AccountModel getAccount(String accountNumber) {
+        AccountModel account = accountRepository.find("accountNumber", accountNumber).firstResult();
         if (account == null) {
             throw new NotFoundException("Account not found");
         }
@@ -86,7 +86,7 @@ public class AccountService {
     }
 
     @Transactional
-    public List<Account> getAllAccounts() {
+    public List<AccountModel> getAllAccounts() {
         return accountRepository.listAll();
     }
 }

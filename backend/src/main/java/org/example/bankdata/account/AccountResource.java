@@ -26,7 +26,7 @@ public class AccountResource {
     AccountService accountService;
 
     @POST
-    public Account createAccount(AccountInput input) {
+    public AccountModel createAccount(AccountInput input) {
         try {
             return accountService.createAccount(input);
         } catch (Exception e) {
@@ -38,7 +38,7 @@ public class AccountResource {
 
     @POST
     @Path("/{accountNumber}/deposit")
-    public Account depositMoney(@PathParam("accountNumber") String accountNumber, DepositeInput input) {
+    public AccountModel depositMoney(@PathParam("accountNumber") String accountNumber, DepositeInput input) {
         try {
             return accountService.depositMoney(accountNumber, input.getAmount());
         } catch (NotFoundException e) {
@@ -96,7 +96,7 @@ public class AccountResource {
     @Path("/{accountNumber}/balance")
     public Response getAccountBalance(@PathParam("accountNumber") String accountNumber) {
         try {
-            Account account = accountService.getAccount(accountNumber);
+            AccountModel account = accountService.getAccount(accountNumber);
             return Response.ok(Map.of("balance", account.getBalance())).build();
         } catch (NotFoundException e) {
             throw new jakarta.ws.rs.WebApplicationException(

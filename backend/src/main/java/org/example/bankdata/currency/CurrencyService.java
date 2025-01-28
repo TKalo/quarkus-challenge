@@ -4,10 +4,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
-import org.json.JSONObject;
-import org.json.JSONException;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.json.JSONObject;
 
 import jakarta.enterprise.context.ApplicationScoped;
 

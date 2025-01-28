@@ -6,7 +6,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.example.bankdata.account.Account;
+import org.example.bankdata.account.AccountModel;
 import org.example.bankdata.account.AccountRepository;
 import org.example.bankdata.account.input.AccountInput;
 import org.example.bankdata.account.input.DepositeInput;
@@ -44,7 +44,7 @@ class AccountResourceTest {
                                 }
                                 """;
 
-                Account responseAccount = given()
+                AccountModel responseAccount = given()
                                 .header("Content-Type", "application/json")
                                 .body(requestBody)
                                 .when()
@@ -54,9 +54,9 @@ class AccountResourceTest {
                                 .body("id", notNullValue())
                                 .body("accountNumber", notNullValue())
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
-                Account databaseAccount = accountRepository.findById(responseAccount.getId());
+                AccountModel databaseAccount = accountRepository.findById(responseAccount.getId());
 
                 assertEquals(responseAccount.getId(), databaseAccount.getId());
                 assertEquals(responseAccount.getFirstName(), databaseAccount.getFirstName());
@@ -72,7 +72,7 @@ class AccountResourceTest {
                 input.setFirstName("John");
                 input.setLastName("Doe");
 
-                Account account = RestAssured.given()
+                AccountModel account = RestAssured.given()
                                 .contentType("application/json")
                                 .body(input)
                                 .when()
@@ -80,7 +80,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 DepositeInput depositeInput = new DepositeInput();
                 depositeInput.setAmount(100);
@@ -101,7 +101,7 @@ class AccountResourceTest {
                 input.setFirstName("Jane");
                 input.setLastName("Smith");
 
-                Account account = RestAssured.given()
+                AccountModel account = RestAssured.given()
                                 .contentType("application/json")
                                 .body(input)
                                 .when()
@@ -109,7 +109,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 DepositeInput depositeInput = new DepositeInput();
                 depositeInput.setAmount(0);
@@ -147,7 +147,7 @@ class AccountResourceTest {
                 sourceInput.setFirstName("John");
                 sourceInput.setLastName("Doe");
 
-                Account sourceAccount = RestAssured.given()
+                AccountModel sourceAccount = RestAssured.given()
                                 .contentType("application/json")
                                 .body(sourceInput)
                                 .when()
@@ -155,7 +155,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 // Deposit money into source account
                 DepositeInput depositeInput = new DepositeInput();
@@ -173,7 +173,7 @@ class AccountResourceTest {
                 destinationInput.setFirstName("Jane");
                 destinationInput.setLastName("Smith");
 
-                Account destinationAccount = RestAssured.given()
+                AccountModel destinationAccount = RestAssured.given()
                                 .contentType("application/json")
                                 .body(destinationInput)
                                 .when()
@@ -181,7 +181,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 // Transfer money
                 TransferInput input = new TransferInput();
@@ -206,7 +206,7 @@ class AccountResourceTest {
                 sourceInput.setFirstName("John");
                 sourceInput.setLastName("Doe");
 
-                Account validAccount = RestAssured.given()
+                AccountModel validAccount = RestAssured.given()
                                 .contentType("application/json")
                                 .body(sourceInput)
                                 .when()
@@ -214,7 +214,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 TransferInput input = new TransferInput();
                 input.setFromAccount("non-existing-account");
@@ -238,7 +238,7 @@ class AccountResourceTest {
                 sourceInput.setFirstName("John");
                 sourceInput.setLastName("Doe");
 
-                Account validAccount = RestAssured.given()
+                AccountModel validAccount = RestAssured.given()
                                 .contentType("application/json")
                                 .body(sourceInput)
                                 .when()
@@ -246,7 +246,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 TransferInput input = new TransferInput();
                 input.setFromAccount(validAccount.getAccountNumber());
@@ -270,7 +270,7 @@ class AccountResourceTest {
                 sourceInput.setFirstName("John");
                 sourceInput.setLastName("Doe");
 
-                Account sourceAccount = RestAssured.given()
+                AccountModel sourceAccount = RestAssured.given()
                                 .contentType("application/json")
                                 .body(sourceInput)
                                 .when()
@@ -278,13 +278,13 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 AccountInput destinationInput = new AccountInput();
                 destinationInput.setFirstName("John");
                 destinationInput.setLastName("Doe");
 
-                Account destinationAccount = RestAssured.given()
+                AccountModel destinationAccount = RestAssured.given()
                                 .contentType("application/json")
                                 .body(sourceInput)
                                 .when()
@@ -292,7 +292,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 TransferInput input = new TransferInput();
                 input.setFromAccount(sourceAccount.getAccountNumber());
@@ -316,7 +316,7 @@ class AccountResourceTest {
                 sourceInput.setFirstName("John");
                 sourceInput.setLastName("Doe");
 
-                Account sourceAccount = RestAssured.given()
+                AccountModel sourceAccount = RestAssured.given()
                                 .contentType("application/json")
                                 .body(sourceInput)
                                 .when()
@@ -324,13 +324,13 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 AccountInput destinationInput = new AccountInput();
                 destinationInput.setFirstName("John");
                 destinationInput.setLastName("Doe");
 
-                Account destinationAccount = RestAssured.given()
+                AccountModel destinationAccount = RestAssured.given()
                                 .contentType("application/json")
                                 .body(sourceInput)
                                 .when()
@@ -338,7 +338,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 TransferInput input = new TransferInput();
                 input.setFromAccount(sourceAccount.getAccountNumber());
@@ -362,7 +362,7 @@ class AccountResourceTest {
                 validInput.setFirstName("John");
                 validInput.setLastName("Doe");
 
-                Account validAccount = RestAssured.given()
+                AccountModel validAccount = RestAssured.given()
                                 .contentType("application/json")
                                 .body(validInput)
                                 .when()
@@ -370,7 +370,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 TransferInput input = new TransferInput();
                 input.setFromAccount(validAccount.getAccountNumber());
@@ -394,7 +394,7 @@ class AccountResourceTest {
                 input.setFirstName("John");
                 input.setLastName("Doe");
 
-                Account account = RestAssured.given()
+                AccountModel account = RestAssured.given()
                                 .contentType("application/json")
                                 .body(input)
                                 .when()
@@ -402,7 +402,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 RestAssured.given()
                                 .when()
@@ -419,7 +419,7 @@ class AccountResourceTest {
                 input.setFirstName("John");
                 input.setLastName("Doe");
 
-                Account account = RestAssured.given()
+                AccountModel account = RestAssured.given()
                                 .contentType("application/json")
                                 .body(input)
                                 .when()
@@ -427,7 +427,7 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .extract()
-                                .as(Account.class);
+                                .as(AccountModel.class);
 
                 DepositeInput depositeInput = new DepositeInput();
                 depositeInput.setAmount(100);
