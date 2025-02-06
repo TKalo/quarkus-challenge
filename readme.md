@@ -82,6 +82,7 @@ It is possible to run the backend and frontend applications locally with some ad
 - Java 17.0.13
 - Apache Maven 3.9.9
 - Node.js 18.20.0
+- PostgreSQL 15
 
 #### Backend Setup
 
@@ -96,6 +97,8 @@ It is possible to run the backend and frontend applications locally with some ad
    ```bash
    mvn quarkus:test
    ```
+    > **Note:** Requires a running docker envinronment
+
 6. Start the backend application:
    ```bash
    mvn quarkus:dev
@@ -132,7 +135,7 @@ The backend provides a REST API with the following endpoints:
 | GET    | /accounts/{id}/balance                             | Get the balance of an account                                    |
 | GET    | /currency/{baseCurrency}/{targetCurrency}/{amount} | Convert the amount from the base currency to the target currency |
 
-**Note:** *Only DKK and USD are supported as currencies for the currency conversion.*
+> **Note:** *Only DKK and USD are supported as currencies for the currency conversion.*
 
 ### Swagger
 
@@ -188,7 +191,7 @@ Tests have been implemented for the `account` module and are located in the `Acc
 
 ## Frontend Structure
 
-The frontend is a React application using Vite as the build tool and TailwindCSS for styling. It consists of a single page with a row of feature components.
+The frontend is a React application using Vite as the build tool and TailwindCSS for styling. It consists of a single page with a column of feature components.
 
 ### Components
 

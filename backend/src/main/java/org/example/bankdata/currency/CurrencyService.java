@@ -54,7 +54,6 @@ public class CurrencyService {
             return conversionResult;
 
         } catch (IOException e) {
-            System.out.println("Error while calling the exchange rate API: " + e.getMessage());
             throw new RuntimeException("Error while calling the exchange rate API: " + e.getMessage(), e);
         }
     }

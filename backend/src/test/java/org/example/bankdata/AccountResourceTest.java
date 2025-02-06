@@ -142,7 +142,6 @@ class AccountResourceTest {
         @Test
         @Tag("transfer")
         public void testSuccessfulTransfer() {
-                // Create source account
                 AccountInput sourceInput = new AccountInput();
                 sourceInput.setFirstName("John");
                 sourceInput.setLastName("Doe");
@@ -157,7 +156,6 @@ class AccountResourceTest {
                                 .extract()
                                 .as(AccountModel.class);
 
-                // Deposit money into source account
                 DepositeInput depositeInput = new DepositeInput();
                 depositeInput.setAmount(100);
                 RestAssured.given()
@@ -168,7 +166,6 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200);
 
-                // Create destination account
                 AccountInput destinationInput = new AccountInput();
                 destinationInput.setFirstName("Jane");
                 destinationInput.setLastName("Smith");
@@ -183,11 +180,10 @@ class AccountResourceTest {
                                 .extract()
                                 .as(AccountModel.class);
 
-                // Transfer money
                 TransferInput input = new TransferInput();
                 input.setFromAccount(sourceAccount.getAccountNumber());
                 input.setToAccount(destinationAccount.getAccountNumber());
-                input.setAmount(50.0);
+                input.setAmount(100);
 
                 RestAssured.given()
                                 .contentType("application/json")
@@ -197,6 +193,21 @@ class AccountResourceTest {
                                 .then()
                                 .statusCode(200)
                                 .body("message", equalTo("Transfer successful"));
+
+                // Missing updated balance check
+                RestAssured.given()
+                                .when()
+                                .get("/account/" + sourceAccount.getAccountNumber() + "/balance")
+                                .then()
+                                .statusCode(200)
+                                .body("balance", equalTo((float) 0));
+
+                RestAssured.given()
+                                .when()
+                                .get("/account/" + destinationAccount.getAccountNumber() + "/balance")
+                                .then()
+                                .statusCode(200)
+                                .body("balance", equalTo((float) 100.0));
         }
 
         @Test
