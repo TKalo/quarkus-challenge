@@ -97,7 +97,7 @@ It is possible to run the backend and frontend applications locally with some ad
    ```bash
    mvn quarkus:test
    ```
-    > **Note:** Requires a running docker envinronment
+    > **Note:** Requires a running docker environment
 
 6. Start the backend application:
    ```bash
