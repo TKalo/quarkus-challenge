@@ -1,4 +1,4 @@
-package org.example.bankdata.account;
+package org.example.quarkuschallenge.account;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

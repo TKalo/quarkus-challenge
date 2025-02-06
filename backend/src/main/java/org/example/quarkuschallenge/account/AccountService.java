@@ -1,10 +1,10 @@
-package org.example.bankdata.account;
+package org.example.quarkuschallenge.account;
 
 import java.util.List;
 import java.util.UUID;
 
-import org.example.bankdata.account.input.AccountInput;
-import org.example.bankdata.currency.CurrencyService;
+import org.example.quarkuschallenge.account.input.AccountInput;
+import org.example.quarkuschallenge.currency.CurrencyService;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;

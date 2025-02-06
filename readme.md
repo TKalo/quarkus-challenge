@@ -1,4 +1,4 @@
-# Bankdata Coding Challenge
+# Quarkus Coding Challenge
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -9,7 +9,7 @@
 
 ## Project Overview
 
-This project is a coding challenge proposed by Bankdata. It demonstrates the implementation of a full-stack application that combines a Quarkus-based backend and a React-based frontend. The system allows users to manage bank accounts and perform currency conversions between DKK and USD. The project is containerized using Docker Compose for ease of deployment and setup.
+This project is a minor coding challenge to test the basic structure of the Java framework Quarkus. It demonstrates the implementation of a full-stack application that combines a Quarkus-based backend and a React-based frontend. The system allows users to manage bank accounts and perform currency conversions between DKK and USD. The project is containerized using Docker Compose for ease of deployment and setup.
 
 ### Key Features:
 - Create and manage bank accounts.

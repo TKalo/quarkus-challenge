@@ -1,4 +1,4 @@
-package org.example.bankdata;
+package org.example.quarkuschallenge;
 
 import java.util.HashMap;
 import java.util.Map;

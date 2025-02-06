@@ -1,4 +1,4 @@
-package org.example.bankdata.currency;
+package org.example.quarkuschallenge.currency;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;

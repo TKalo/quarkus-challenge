@@ -1,4 +1,4 @@
-package org.example.bankdata;
+package org.example.quarkuschallenge;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -6,11 +6,11 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.example.bankdata.account.AccountModel;
-import org.example.bankdata.account.AccountRepository;
-import org.example.bankdata.account.input.AccountInput;
-import org.example.bankdata.account.input.DepositeInput;
-import org.example.bankdata.account.input.TransferInput;
+import org.example.quarkuschallenge.account.AccountModel;
+import org.example.quarkuschallenge.account.AccountRepository;
+import org.example.quarkuschallenge.account.input.AccountInput;
+import org.example.quarkuschallenge.account.input.DepositeInput;
+import org.example.quarkuschallenge.account.input.TransferInput;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

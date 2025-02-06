@@ -1,4 +1,4 @@
-package org.example.bankdata.currency;
+package org.example.quarkuschallenge.currency;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

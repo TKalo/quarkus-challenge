@@ -1,4 +1,4 @@
-package org.example.bankdata.account.input;
+package org.example.quarkuschallenge.account.input;
 
 public class DepositeInput {
     private double amount;

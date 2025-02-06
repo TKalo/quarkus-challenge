@@ -1,10 +1,10 @@
-package org.example.bankdata.account;
+package org.example.quarkuschallenge.account;
 
 import java.util.Map;
 
-import org.example.bankdata.account.input.AccountInput;
-import org.example.bankdata.account.input.DepositeInput;
-import org.example.bankdata.account.input.TransferInput;
+import org.example.quarkuschallenge.account.input.AccountInput;
+import org.example.quarkuschallenge.account.input.DepositeInput;
+import org.example.quarkuschallenge.account.input.TransferInput;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
